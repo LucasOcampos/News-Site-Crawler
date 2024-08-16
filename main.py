@@ -2,6 +2,7 @@ import argparse
 import logging
 import os
 from datetime import datetime
+from robocorp.tasks import task
 
 from src.executor import Executor
 
@@ -30,13 +31,20 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-if __name__ == "__main__":
+@task(this_is_option='aljazeera')
+def aljazeera():
     subclasses = {sub.NEWS_SITE: sub for sub in Executor.__subclasses__()}
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("news_site")
-    arg = parser.parse_args()
+    with Executor.init_driver()() as driver:
+        executor = subclasses['aljazeera'](driver)
+        status = executor()
+
+
+@task(this_is_option='all')
+def run():
+    subclasses = {sub.NEWS_SITE: sub for sub in Executor.__subclasses__()}
 
     with Executor.init_driver()() as driver:
-        executor = subclasses[arg.news_site](driver)
-        status = executor()
+        for news_site in list(subclasses.keys()):
+            executor = subclasses[news_site](driver)
+            status = executor()
