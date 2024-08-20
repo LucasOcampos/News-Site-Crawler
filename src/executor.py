@@ -10,8 +10,10 @@ class Executor(ABC):
     NEWS_SITE = None
     HOME_URL = None
 
-    def __init__(self, driver: Driver):
+    def __init__(self, driver: Driver, search_phrase: str, num_months: int):
         self._driver = driver
+        self._search_phrase = search_phrase
+        self._num_months = num_months
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
 
     @classmethod

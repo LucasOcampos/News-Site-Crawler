@@ -3,6 +3,7 @@ import os
 import shutil
 from datetime import datetime, timedelta
 from robocorp.tasks import task
+from RPA.Robocorp.WorkItems import WorkItems
 
 from src.executor import Executor
 
@@ -34,13 +35,18 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+wi = WorkItems()
+wi.get_input_work_item()
+search_phrase = wi.get_work_item_variable("search_phrase")
+num_months = wi.get_work_item_variable("num_months")
+
 
 @task()
 def aljazeera():
     subclasses = {sub.NEWS_SITE: sub for sub in Executor.__subclasses__()}
 
     with Executor.init_driver()() as driver:
-        executor = subclasses["aljazeera"](driver)
+        executor = subclasses["aljazeera"](driver, search_phrase, num_months)
         executor()
 
     cleanup_files()
@@ -53,7 +59,7 @@ def run():
 
     with Executor.init_driver()() as driver:
         for news_site in list(subclasses.keys()):
-            executor = subclasses[news_site](driver)
+            executor = subclasses[news_site](driver, search_phrase, num_months)
             executor()
 
     cleanup_files()

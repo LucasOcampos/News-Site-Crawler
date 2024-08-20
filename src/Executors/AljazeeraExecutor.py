@@ -7,8 +7,8 @@ class AljazeeraExecutor(Executor):
     NEWS_SITE = "aljazeera"
     HOME_URL = AljazeeraMapping.HOME_URL
 
-    def __init__(self, driver: Driver):
-        super().__init__(driver)
+    def __init__(self, driver: Driver, search_phrase: str, num_months: int):
+        super().__init__(driver, search_phrase, num_months)
 
     def execute(self):
         self.logger.info(f"Opening news site: {self.HOME_URL}")
@@ -21,7 +21,7 @@ class AljazeeraExecutor(Executor):
         aljazeera.close_cookies(AljazeeraMapping.FIELD_MAPPER["Cookies"]["Accept"])
 
         aljazeera.perform_search(
-            "Economy",
+            self._search_phrase,
             AljazeeraMapping.FIELD_MAPPER["Search Bar"]["Input"],
             AljazeeraMapping.FIELD_MAPPER["Search Bar"]["Search Button"],
             AljazeeraMapping.FIELD_MAPPER["Results Page"]["Results Amount"],
@@ -35,5 +35,5 @@ class AljazeeraExecutor(Executor):
             ][0],
         )
 
-        aljazeera.load_news_cards(2)
-        aljazeera.save_data(2, "Economy")
+        aljazeera.load_news_cards(self._num_months)
+        aljazeera.save_data(self._num_months, self._search_phrase)
