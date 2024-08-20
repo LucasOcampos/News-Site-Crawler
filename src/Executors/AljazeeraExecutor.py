@@ -10,20 +10,30 @@ class AljazeeraExecutor(Executor):
     def __init__(self, driver: Driver):
         super().__init__(driver)
 
-    def perform_search(self):
-        raise NotImplementedError
-
     def execute(self):
         self.logger.info(f"Opening news site: {self.HOME_URL}")
         aljazeera = AljazeeraMapping.create_from_driver(self._driver)
         aljazeera.navigate_to(
             self.HOME_URL,
-            (
-                AljazeeraMapping.FIELD_MAPPER["Header"]["Site Logo"]["by"],
-                AljazeeraMapping.FIELD_MAPPER["Header"]["Site Logo"]["identifier"],
-            ),
+            AljazeeraMapping.FIELD_MAPPER["Header"]["Site Logo"],
         )
 
-        self.perform_search()
+        aljazeera.close_cookies(AljazeeraMapping.FIELD_MAPPER["Cookies"]["Accept"])
 
-        pass
+        aljazeera.perform_search(
+            "Economy",
+            AljazeeraMapping.FIELD_MAPPER["Search Bar"]["Input"],
+            AljazeeraMapping.FIELD_MAPPER["Search Bar"]["Search Button"],
+            AljazeeraMapping.FIELD_MAPPER["Results Page"]["Results Amount"],
+            AljazeeraMapping.FIELD_MAPPER["Header"]["Search Button"],
+        )
+
+        aljazeera.sort_search(
+            AljazeeraMapping.FIELD_MAPPER["Results Page"]["Sort"],
+            AljazeeraMapping.SELECT_OPTIONS_MAPPER[
+                AljazeeraMapping.FIELD_MAPPER["Results Page"]["Sort"]
+            ][0],
+        )
+
+        aljazeera.load_news_cards(2)
+        aljazeera.save_data(2, "Economy")

@@ -34,7 +34,3 @@ class Executor(ABC):
     @abstractmethod
     def execute(self):
         raise NotImplementedError
-
-    @abstractmethod
-    def perform_search(self):
-        raise NotImplementedError
