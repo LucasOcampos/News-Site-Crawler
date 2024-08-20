@@ -7,7 +7,7 @@ from RPA.Robocorp.WorkItems import WorkItems
 
 from src.executor import Executor
 
-logs_directory = os.path.join(os.getcwd(), r"output", r"logs")
+logs_directory = os.path.join(os.getcwd(), r"output")
 os.makedirs(logs_directory, exist_ok=True)
 
 log_file = f'{datetime.now().strftime("%Y_%m_%d")}.log'
