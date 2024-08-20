@@ -7,14 +7,13 @@ from RPA.Robocorp.WorkItems import WorkItems
 
 from src.executor import Executor
 
-os.makedirs(os.path.join(os.getcwd(), r"logs"), exist_ok=True)
-
-logs_directory = os.path.join(os.getcwd(), r"logs")
+logs_directory = os.path.join(os.getcwd(), r"output", r"logs")
+os.makedirs(logs_directory, exist_ok=True)
 
 log_file = f'{datetime.now().strftime("%Y_%m_%d")}.log'
 log_file_path = os.path.join(logs_directory, log_file)
 
-downloaded_files_dir = f"{os.getcwd()}/files"
+downloaded_files_dir = os.path.join(os.getcwd(), r"files")
 os.makedirs(downloaded_files_dir, exist_ok=True)
 
 logging.basicConfig(
